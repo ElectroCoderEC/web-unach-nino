@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cuadrícula de Botones</title>
+    <style>
+      body {
+        font-family: "Roboto", Arial, sans-serif;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background-color: rgb(116, 126, 140); /* Fondo más oscuro */
+      }
+
+      h1 {
+        margin-bottom: 20px;
+        font-size: 2.5rem; /* Título más grande */
+        color: #333;
+      }
+
+      .grid-container {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr); /* 5 columnas */
+        gap: 30px; /* Más espacio entre botones */
+        width: 90%; /* Ocupa el 90% del ancho de la pantalla */
+        height: 70%; /* Ocupa el 70% de la altura de la pantalla */
+        background-color: rgb(124, 135, 151);
+        padding: 20px;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(64, 60, 60, 0.54);
+        overflow: auto; /* Permite desplazamiento si los botones no caben */
+      }
+
+      .button {
+        background: linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.63),
+          rgb(155, 196, 182)
+        ); /* Degradado moderno */
+        color: rgb(94, 79, 79);
+        border: none;
+        padding: 40px 50px; /* Tamaño de botón más grande */
+        font-size: 1.5rem; /* Texto más grande */
+        border-radius: 12px;
+        cursor: pointer;
+        text-align: center;
+        text-transform: capitalize;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .button:hover {
+        transform: scale(1.1); /* Ligero aumento al pasar el ratón */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      .return-button {
+        margin-top: 30px;
+        background: linear-gradient(
+          145deg,
+          #60a5fa,
+          #2563eb
+        ); /* Degradado azul */
+        color: white;
+        border: none;
+        padding: 20px 60px; /* Botón más grande */
+        font-size: 1.2rem; /* Texto más grande */
+        border-radius: 30px;
+        cursor: pointer;
+        text-transform: uppercase;
+        font-weight: bold;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .return-button:hover {
+        transform: translateY(-3px); /* Efecto flotante */
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      }
+
+      .return-button:active {
+        transform: translateY(0); /* Simula un clic */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Cuadrícula de Botones</h1>
+    <div class="grid-container">
+      <!-- Botones generados dinámicamente -->
+      {% for palabra in palabras %}
+      <button class="button" onclick="reproducirAudio('{{ palabra }}')">
+        {{ palabra }}
+      </button>
+      {% endfor %}
+    </div>
+
+    <!-- Botón de regreso -->
+    <button class="return-button" onclick="window.location.href='/principal';">
+      Regresar a Principal
+    </button>
+
+    <script>
+      // Reproducir audio
+      function reproducirAudio(palabra) {
+        const audio = new Audio(`/static/audio/${palabra}.mp3`);
+        audio.play();
+      }
+    </script>
+  </body>
+
+
+  <script>
+    const audioIntro = new Audio('../static/audio/efectos/observatory.mp3'); // Reemplaza con tu ruta local
+    
+    if (typeof audioIntro.loop == 'boolean')
+        {
+          audioIntro.loop = true;
+        }
+        else
+        {
+          audioIntro.addEventListener('ended', function() {
+                this.currentTime = 0;
+                this.play();
+            }, false);
+        }
+    audioIntro.play();
+  </script>
+</html>

@@ -1,0 +1,252 @@
+/* Estilos globales */
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #f5f5f5;
+  font-family: "Roboto", sans-serif;
+  color: #333;
+}
+
+/* Título */
+h1 {
+  font-size: 3em;
+  margin-bottom: 20px;
+  color: #2196f3; /* Color llamativo */
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* Estilos de los botones */
+button {
+  margin: 15px;
+  padding: 12px 24px;
+  font-size: 1.2em;
+  cursor: pointer;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+  font-weight: 600;
+}
+
+/* Efectos de los botones */
+button:hover {
+  background-color: #1976d2; /* Color más oscuro al pasar el ratón */
+  transform: translateY(-4px); /* Efecto de elevación */
+}
+
+button:active {
+  transform: translateY(
+    0
+  ); /* Botón vuelve a su posición cuando se hace clic */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Fondo de la página */
+body::before {
+  content: "";
+  position: absolute;
+  top: 10;
+  left: 10;
+  width: 100%;
+  height: 100%;
+  background: url("../images/fondo.jpg")
+    no-repeat center center fixed;
+  background-size: cover;
+  opacity: 0.8; /* Fondo sutil */
+  z-index: -1;
+}
+
+
+/* Aumentar el tamaño del texto */
+.titulo-animado {
+font-size: 5rem; /* Ajusta el tamaño según lo que desees */
+text-align: center;
+font-weight: bold;
+color: transparent; /* Hace que el texto sea transparente para ver el gradiente */
+display: inline-block; /* Asegura que las letras estén alineadas */
+position: absolute; /* Hace que el texto esté en posición fija */
+top: 110px; /* Ajusta la distancia desde la parte superior de la pantalla */
+left: 50%; /* Centra el texto horizontalmente */
+transform: translateX(-50%); /* Ajusta para que el centro quede justo en el medio */
+z-index: 1; /* Hace que el texto esté por encima de la imagen */
+animation: cambioColor 5s infinite alternate, brillo 1.5s infinite alternate; /* Animaciones de colores y brillo */
+text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 15px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.8); /* Brillo */
+
+
+
+}
+
+/* Animación de cambio de color */
+@keyframes cambioColor {
+0% {
+  color: #ff007f; /* Rosa brillante */
+}
+20% {
+  color: #ff8c00; /* Naranja brillante */
+}
+40% {
+  color: #00ff7f; /* Verde brillante */
+}
+60% {
+  color: #ff00ff; /* Magenta brillante */
+}
+80% {
+  color: #00bfff; /* Azul brillante */
+}
+100% {
+  color: #ff007f; /* Vuelve al rosa */
+}
+}
+
+/* Animación de brillo */
+@keyframes brillo {
+0% {
+  text-shadow: 0 0 60px rgba(255, 255, 255, 0.8), 0 0 15px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.8);
+}
+50% {
+  text-shadow: 0 0 30px rgba(255, 255, 255, 1), 0 0 30px rgba(255, 255, 255, 1), 0 0 40px rgba(255, 255, 255, 1);
+}
+100% {
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 15px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.8);
+}
+}
+
+
+
+.fondo-menu {
+position: absolute;
+top: 0px; /* Ajusta la distancia desde la parte superior de la pantalla */
+left: 50%;
+transform: translateX(-80%);
+}
+
+
+
+/* Animación de salto para los botones */
+@keyframes salto {
+0% {
+  transform: translateY(0);
+}
+25% {
+  transform: translateY(-20px); /* Salto hacia arriba */
+}
+50% {
+  transform: translateY(0); /* Vuelve a su posición original */
+}
+75% {
+  transform: translateY(-10px); /* Otro pequeño salto hacia arriba */
+}
+100% {
+  transform: translateY(0); /* Vuelve al suelo */
+}
+}
+
+/* Aplicar la animación de salto a los botones */
+.btn-salto {
+animation: salto 1s infinite; /* Hace que los botones salten indefinidamente */
+}
+
+/* Aplicar animación de explosión primero */
+.btn-explosion1 {
+animation: explosion 0.5s ease-out;
+animation-fill-mode: forwards; /* Mantiene el estado final */
+}
+
+/* Aplicar animación de explosión primero */
+.btn-explosion2 {
+animation: explosion 1s ease-out;
+animation-fill-mode: forwards; /* Mantiene el estado final */
+}
+
+/* Aplicar animación de explosión primero */
+.btn-explosion3 {
+animation: explosion 1.5s ease-out;
+animation-fill-mode: forwards; /* Mantiene el estado final */
+}
+
+
+/* Animación de explosión */
+@keyframes explosion {
+0% {
+  transform: scale(0.1);
+  opacity: 0;
+}
+50% {
+  transform: scale(2.5); /* Aumenta de tamaño como explosión */
+  opacity: 1;
+}
+100% {
+  transform: scale(1); /* Vuelve a tamaño normal */
+  opacity: 1;
+}
+}
+
+
+
+/* Animación para mover toda la página a la izquierda */
+@keyframes slideLeft {
+0% {
+  transform: translateX(0);
+  opacity: 1;
+}
+100% {
+  transform: translateX(-100vw);
+  opacity: 0;
+}
+}
+
+/* Aplicar la animación cuando se active */
+.animar-salida {
+animation: slideLeft 1s ease-in-out forwards;
+}
+
+
+
+.etiqueta-diagonal1 {
+  position: absolute;
+  top: 10px; /* Ajusta para separarlo del borde superior */
+  right: 10px; /* Ajusta para centrar diagonalmente en la tarjeta */
+  transform-origin: top right;
+  text-align: center;
+}
+
+.etiqueta-diagonal2 {
+  position: absolute;
+  top: 60px; /* Ajusta para separarlo del borde superior */
+  right: 50px; /* Ajusta para centrar diagonalmente en la tarjeta */
+  transform-origin: top right;
+  text-align: center;
+}
+
+
+.btn-breath {
+  /*//animation: salto 1s infinite;  Hace que los botones salten indefinidamente */
+  animation: breathing 2s infinite ease-in-out;
+}
+
+@keyframes breathing {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+
+
+/* Efecto de presionar */
+.boton-reducido {
+  transition: transform 0.1s ease; /* Transición suave */
+}
+
+.boton-reducido:active {
+  transform: scale(0.9); /* Reducir el tamaño al 90% */
+}
+
+
