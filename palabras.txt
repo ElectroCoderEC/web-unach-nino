@@ -257,3 +257,6 @@ tic-tac-toe
 amor
 corazón
 late
+Pide
+ayuda
+ve

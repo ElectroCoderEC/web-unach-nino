@@ -1,0 +1,440 @@
+body {
+  display: flex;
+  height: 100vh;
+  margin: 0;
+  font-family: "Roboto", sans-serif;
+  background: linear-gradient(
+    145deg,
+    rgba(241, 235, 235, 0.63),
+    rgb(133, 139, 143)
+  ); /* Degradado moderno */
+}
+
+/* Fondo de la página */
+body::before {
+content: "";
+position: absolute;
+top: 10;
+left: 10;
+width: 100%;
+height: 100%;
+background: url("../images/fondo.jpg")
+no-repeat center center fixed;
+background-size: cover;
+opacity: 0.8; /* Fondo sutil */
+z-index: -1;
+}
+
+.sidebar {
+width: 220px;
+height: 100%; /* O ajusta la altura según necesites */
+overflow-y: auto; /* Permite el desplazamiento vertical */
+overflow-x: hidden; /* Evita el desplazamiento horizontal */
+scrollbar-width: thin; /* Estilo para navegadores como Firefox */
+scrollbar-color: rgba(0, 0, 0, 0.3) transparent; /* Color de la barra de desplazamiento */
+background: radial-gradient(circle, #F8F3E7 0%, #E5C995 100%); /* Degradado */
+
+border: 5px solid #65472B;
+
+}
+
+/* Estilizar la barra de desplazamiento en Chrome y Edge */
+.sidebar::-webkit-scrollbar {
+width: 8px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+background: rgba(0, 0, 0, 0.3);
+border-radius: 4px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+background: transparent;
+}
+
+.sidebar button {
+  width: 100%;
+  padding: 40px 0px; /* Ajustado para mejor distribución vertical */
+
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+
+  text-align: center; /* Centrar el texto */
+  
+  border: 5px;
+  font-size: 1.7rem; /* Texto más grande */
+ 
+  cursor: pointer;
+  text-transform: capitalize;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Asegurar que el texto esté centrado */
+
+  background: url('../images/btnCategoria2.png') no-repeat center center;
+  background-size: 100%  100%;
+  font-weight: bold;
+}
+
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  
+}
+
+.cajaBotones {
+  position: absolute;
+  top: 10px;
+  left: 57%;
+  transform: translateX(-50%);
+  z-index: 100;
+}
+
+.button-container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5 botones por fila */
+  gap: 10px;
+  justify-content: center;
+  max-height: 500px; /* Limita la altura para activar scroll si hay muchos botones */
+  overflow-y: auto; /* Permite el desplazamiento vertical */
+  overflow-x: auto; /* Evita el desplazamiento horizontal */
+  scrollbar-width: thin; /* Estilo para navegadores como Firefox */
+  scrollbar-color: rgba(0, 0, 0, 0.3) transparent; /* Color de la barra de desplazamiento */
+  padding: 10px;
+  }
+
+
+
+/* Estilizar la barra de desplazamiento en Chrome y Edge */
+.button-container::-webkit-scrollbar {
+    width: 8px;
+    }
+    
+    .button-container::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    }
+    
+    .button-container::-webkit-scrollbar-track {
+    background: transparent;
+    }
+
+
+
+.boton-activado {
+color: rgb(94, 79, 79);
+border: none;
+padding: 40px 40px; /* Ajusta el tamaño */
+font-size: 1.2rem;
+border-radius: 12px;
+cursor: pointer;
+text-align: center;
+text-transform: capitalize;
+transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+background: url('../images/palabras.png') no-repeat center center;
+background-size: 100%  100%;
+
+font-size: 20px;
+font-weight: bold;
+}
+
+.boton-desactivado {
+background: url('../images/palabrasGray.png') no-repeat center center;
+background-size: 100%  100%;
+}
+
+
+
+/* Animación de salto para los botones */
+@keyframes salto {
+0% {
+transform: translateY(0);
+}
+25% {
+transform: translateY(-10px); /* Salto hacia arriba */
+}
+50% {
+transform: translateY(0); /* Vuelve a su posición original */
+}
+75% {
+transform: translateY(-5px); /* Otro pequeño salto hacia arriba */
+}
+100% {
+transform: translateY(0); /* Vuelve al suelo */
+}
+}
+
+/* Aplicar la animación de salto a los botones */
+.btn-salto {
+animation: salto 2s infinite;  /*Hace que los botones salten indefinidamente */
+}
+
+.btn-salto2 {
+animation: salto 3s infinite;  /*Hace que los botones salten indefinidamente */
+}
+
+.btn-salto3 {
+animation: salto 1s infinite;  /*Hace que los botones salten indefinidamente */
+}
+
+
+.btn-breath {
+/*//animation: salto 1s infinite;  Hace que los botones salten indefinidamente */
+animation: breathing 2s infinite ease-in-out;
+}
+
+
+
+@keyframes breathing {
+0% { transform: scale(1); }
+50% { transform: scale(1.025); }
+100% { transform: scale(1); }
+}
+
+
+.btn-explosion {
+animation: explosion 2s ease-out;
+animation-fill-mode: forwards; /* Mantiene el estado final */
+}
+
+
+/* Animación de explosión */
+@keyframes explosion {
+0% {
+transform: scale(0.1);
+opacity: 0;
+}
+50% {
+transform: scale(2.5); /* Aumenta de tamaño como explosión */
+opacity: 1;
+}
+100% {
+transform: scale(1); /* Vuelve a tamaño normal */
+opacity: 1;
+}
+}
+
+
+
+
+
+
+textarea {
+  width: 100%;
+  height: 90px;
+  text-align: center;
+  margin-top: 20px;
+
+  padding: 10px;
+  font-size: 2.5rem;
+  line-height: 90px; /* Misma altura del textarea */
+}
+
+.action-buttons {
+  margin-top: 20px;
+  display: flex;
+  gap: 20px;
+}
+
+.action-buttons button {
+ 
+  background-color: transparent;
+  border: none;
+  margin-bottom: 10px;
+
+
+}
+
+
+
+.mi-boton2 {
+display: inline-block;
+padding: 12px 30px;
+font-size: 20px;
+font-weight: bold;
+color: #8b5e3b;
+text-align: center;
+background: linear-gradient(to bottom, #dbd892, #ffd500); /* Degradado verde */
+border: 10px solid #8b5e3b; /* Borde marrón simulando la madera */
+border-radius: 40px;
+box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.2), 0 6px 0 #6b4226; /* Sombras */
+text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
+cursor: pointer;
+transition: all 0.2s ease-in-out;
+}
+
+
+.etiqueta-diagonal {
+position: absolute;
+bottom: 10px;
+right: 60px; /* Ajusta para centrar diagonalmente en la tarjeta */
+transform-origin: bottom right;
+text-align: center;
+}
+
+
+.etiqueta-diagonal4 {
+position: absolute;
+bottom: 110px; /* Ajusta para separarlo del borde superior */
+right: 10px; /* Ajusta para centrar diagonalmente en la tarjeta */
+transform-origin: bottom right;
+text-align: center;
+}
+
+
+.etiqueta-diagonal5 {
+position: absolute;
+bottom: 10px;
+left: 17%; /* Ajusta para centrar diagonalmente en la tarjeta */
+transform-origin: bottom left;
+text-align: center;
+
+}
+
+.etiqueta-diagonal6 {
+  position: absolute;
+  bottom: 10px;
+  left: 54%; /* Ajusta para centrar diagonalmente en la tarjeta */
+  transform-origin: bottom left;
+  text-align: center;
+  
+  }
+
+
+/* Efecto de presionar */
+.boton-reducido {
+transition: transform 0.1s ease; /* Transición suave */
+}
+
+.boton-reducido:active {
+transform: scale(0.9); /* Reducir el tamaño al 90% */
+}
+
+
+
+/* Estilo de la nube de consejo */
+.nube-consejo {
+position: absolute;
+bottom: 40px; /* Ajusta según sea necesario */
+left: 69%;
+transform: translateX(-50%);
+background: rgba(255, 255, 255, 0.9);
+color: #333;
+padding: 10px 20px;
+border-radius: 20px;
+box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+font-size: 16px;
+font-weight: bold;
+text-align: center;
+white-space: nowrap;
+animation: aparecer 2s ease-in-out infinite alternate, flotacion 3s ease-in-out infinite;
+}
+
+
+.nube-consejo2 {
+position: absolute;
+bottom: 40px; /* Ajusta según sea necesario */
+left: 32%;
+transform: translateX(-50%);
+background: rgba(213, 13, 13, 0.8);
+color: #fff;
+padding: 10px 20px;
+border-radius: 20px;
+box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+font-size: 16px;
+font-weight: bold;
+text-align: center;
+white-space: nowrap;
+animation: aparecer 4s ease-in-out infinite alternate, flotacion 3s ease-in-out infinite;
+}
+
+/* Animación de parpadeo */
+@keyframes aparecer {
+0% {
+opacity: 0;
+}
+50% {
+opacity: 1;
+}
+100% {
+opacity: 0.8;
+}
+}
+
+/* Animación de flotación */
+@keyframes flotacion {
+0% {
+transform: translateX(-50%) translateY(0);
+}
+50% {
+transform: translateX(-50%) translateY(-5px);
+}
+100% {
+transform: translateX(-50%) translateY(0);
+}
+}
+
+
+
+.invisible {
+visibility: hidden;
+}
+
+
+.remover {
+  display: none;
+}
+
+
+.button-containerCopy {
+  display: absolute;
+  
+  padding: 10px;
+
+  top: 10px;
+left: 40%; /* Ajusta para centrar diagonalmente en la tarjeta */
+transform-origin: top left;
+  
+  }
+
+
+
+.overlay-text {
+  position: absolute;
+  top: 46%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 4rem; /* Aumentar el tamaño del texto */
+  font-weight: bold;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+  padding: 20px 20px; /* Más espacio alrededor del texto */
+  border-radius: 10px;
+  line-height: 1.5; /* Espaciado entre líneas */
+  width: 20%; /* Asegurarse de que haya suficiente espacio para múltiples líneas */
+  word-wrap: break-word; /* Permite que el texto se ajuste dentro del contenedor */
+}
+
+
+.etiquetaOracion {
+  width: 100%;
+  max-width: 60%;
+  position: absolute;
+  bottom: 150px;
+  transform-origin: bottom ;
+  text-align: center;
+
+ 
+}
+
+
+

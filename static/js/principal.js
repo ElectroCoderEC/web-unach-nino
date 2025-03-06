@@ -37,6 +37,29 @@ $(document).ready(function () {
         }, 1000); // Tiempo en ms (1s debe coincidir con la animación CSS)
     });
 
+
+
+    document.getElementById("btnConf").addEventListener("click", function (event) {
+        event.preventDefault(); // Evita la redirección instantánea
+        audioIntro.pause();  // Pausa el audio
+        audioIntro.currentTime = 0; // Reinicia el audio al inicio
+        // Espera 1 segundo (1000ms) antes de redirigir
+        setTimeout(function () {
+            audioClick.currentTime = 0;
+            audioClick.play();
+        }, 50);
+        // Agrega la animación a todo el cuerpo
+        document.body.classList.add("animar-salida");
+
+        // Espera a que termine la animación antes de redirigir
+        setTimeout(() => {
+            window.location.href = "/tabla"; // Cambia la URL de destino
+        }, 1000); // Tiempo en ms (1s debe coincidir con la animación CSS)
+    });
+
+
+
+
     // Espera 1 segundo (1000ms) antes de redirigir
     setTimeout(function () {
 
@@ -64,4 +87,7 @@ $(document).ready(function () {
     }
     audioIntro.play();
 
+
 });
+
+
