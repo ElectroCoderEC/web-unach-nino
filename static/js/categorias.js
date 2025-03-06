@@ -1,8 +1,59 @@
+document.addEventListener('DOMContentLoaded', function () {
+    const audioFamily = new Audio('../audio/efectos/family.mp3'); // Reemplaza con tu ruta local
+
+    // Restaurar el estado del audio
+    restoreAudioState(audioFamily);
+
+    // Configurar el loop del audio
+    if (typeof audioFamily.loop == 'boolean') {
+        audioFamily.loop = true;
+    } else {
+        audioFamily.addEventListener('ended', function () {
+            this.currentTime = 0;
+            this.play();
+        }, false);
+    }
+
+    // Reproducir el audio la primera vez que se carga la página
+    const isFirstLoad = !sessionStorage.getItem('audioFamilyCurrentTime');
+    if (isFirstLoad) {
+        audioFamily.play(); // Reproducir el audio por primera vez
+    }
+
+    // Guardar el estado del audio antes de cambiar de página
+    window.addEventListener('beforeunload', function () {
+        saveAudioState(audioFamily);
+    });
+});
+
+// Guardar el estado del audio
+function saveAudioState(audio) {
+    sessionStorage.setItem('audioFamilyCurrentTime', audio.currentTime);
+    sessionStorage.setItem('audioFamilyIsPlaying', !audio.paused);
+}
+
+// Restaurar el estado del audio
+function restoreAudioState(audio) {
+    const savedTime = sessionStorage.getItem('audioFamilyCurrentTime');
+    const isPlaying = sessionStorage.getItem('audioFamilyIsPlaying') === 'true';
+
+    if (savedTime) {
+        audio.currentTime = parseFloat(savedTime); // Restaurar el tiempo
+    }
+
+    if (isPlaying) {
+        audio.play(); // Continuar reproducción si estaba reproduciéndose
+    }
+}
+
+
 $(document).ready(function () {
 
     const audioClose = new Audio('../audio/efectos/close.wav'); // Reemplaza con tu ruta local
     const audioError = new Audio('../audio/efectos/error_voz.mp3'); // Reemplaza con tu ruta local
     const audioSelect = new Audio('../audio/efectos/select.wav'); // Reemplaza con tu ruta local
+
+
     // Initialize DataTable
     const table = $('#usersTable').DataTable({
         pageLength: 10,  // Set pagination to 10 rows
@@ -191,6 +242,7 @@ $(document).ready(function () {
     document.getElementById('categoriaForm').addEventListener('submit', function (event) {
 
         event.preventDefault();
+
 
         $('#addModal').modal('hide'); // Cierra el modal
 

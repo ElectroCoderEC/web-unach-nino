@@ -2,9 +2,10 @@ const audioError = new Audio('audio/efectos/error.wav'); // Reemplaza con tu rut
 const audioItem = new Audio("audio/efectos/item.wav"); // Asegúrate de que el archivo "click.mp3" esté en tu proyecto
 const audioIntro = new Audio('audio/efectos/observatory.mp3'); // Reemplaza con tu ruta local
 const audioClose = new Audio('../audio/efectos/close.wav'); // Reemplaza con tu ruta local
-const audioBorrar = new Audio('../audio/efectos/cursor.wav'); // Reemplaza con tu ruta local
+const audioBorrar = new Audio('../audio/efectos/letter.wav'); // Reemplaza con tu ruta local
 const audioClick = new Audio('../audio/efectos/campana.mp3'); // Reemplaza con tu ruta local
 const audioCursor = new Audio('../audio/efectos/cursor_menu.wav'); // Reemplaza con tu ruta local
+const audioDesplazar = new Audio('../audio/efectos/cursor.wav'); // Reemplaza con tu ruta local
 
 var tipoCategoria = "";
 
@@ -19,11 +20,56 @@ else {
 }
 audioIntro.play();
 
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const sidebar = document.querySelector('.sidebar');
+    const scrollUpButton = document.getElementById('scrollUpButton');
+    const scrollDownButton = document.getElementById('scrollDownButton');
+
+    // Función para verificar si hay scroll y mostrar/ocultar los botones
+    function checkScroll() {
+        if (sidebar.scrollHeight > sidebar.clientHeight) {
+            // Hay scroll, mostrar los botones
+            scrollUpButton.style.display = 'block';
+            scrollDownButton.style.display = 'block';
+        } else {
+            // No hay scroll, ocultar los botones
+            scrollUpButton.style.display = 'none';
+            scrollDownButton.style.display = 'none';
+        }
+    }
+
+    // Desplazar hacia arriba
+    scrollUpButton.addEventListener('click', function () {
+        sidebar.scrollBy({ top: -100, behavior: 'smooth' }); // Ajusta el valor de desplazamiento
+        audioDesplazar.currentTime = 0; // Reinicia el audio al inicio
+        audioDesplazar.play()
+    });
+
+    // Desplazar hacia abajo
+    scrollDownButton.addEventListener('click', function () {
+        sidebar.scrollBy({ top: 100, behavior: 'smooth' }); // Ajusta el valor de desplazamiento
+        audioDesplazar.currentTime = 0; // Reinicia el audio al inicio
+        audioDesplazar.play()
+    });
+
+    // Verificar el scroll al cargar la página y cuando cambie el tamaño de la ventana
+    checkScroll();
+    window.addEventListener('resize', checkScroll);
+});
+
+
+
+
+
 document.addEventListener("DOMContentLoaded", function () {
     const categorias = document.querySelectorAll(".sidebar button");
     const container = document.querySelector(".button-container");
     const textarea = document.getElementById("oracion-formada");
     const speakButton = document.querySelector(".action-buttons button");
+
+
 
 
     // 📌 Delegación de eventos para los botones de palabras
@@ -45,8 +91,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     categorias.forEach(boton => {
         boton.addEventListener("click", function (event) {
+
+
+
             tipoCategoria = this.value;
-            fcnConsultar(this.value)
+            fcnConsultar(this.value, container)
+
+
         });
     });
 
@@ -101,6 +152,11 @@ document.addEventListener("DOMContentLoaded", function () {
             alert("El texto está vacío.");
         }
     });
+
+
+    // Verificar el scroll al cargar la página y cuando cambie el tamaño de la ventana
+
+
 });
 
 
@@ -215,7 +271,45 @@ function fcnIncrementarContador(palabra) {
 }
 
 
-function fcnConsultar(strCategoria) {
+function fcnConsultar(strCategoria, container) {
+
+
+    const scrollUpButton2 = document.getElementById('scrollUpButton-Palabras');
+    const scrollDownButton2 = document.getElementById('scrollDownButton-Palabras');
+
+
+    // Desplazar hacia arriba
+    scrollUpButton2.addEventListener('click', function () {
+        container.scrollBy({ top: -100, behavior: 'smooth' }); // Ajusta el valor de desplazamiento
+        audioDesplazar.currentTime = 0; // Reinicia el audio al inicio
+        audioDesplazar.play()
+    });
+
+    // Desplazar hacia abajo
+    scrollDownButton2.addEventListener('click', function () {
+        container.scrollBy({ top: 100, behavior: 'smooth' }); // Ajusta el valor de desplazamiento
+        audioDesplazar.currentTime = 0; // Reinicia el audio al inicio
+        audioDesplazar.play()
+    });
+
+
+
+    // Función para verificar si hay scroll y mostrar/ocultar los botones
+    function checkScroll() {
+        if (container.scrollHeight > container.clientHeight) {
+            // Hay scroll, mostrar los botones
+            scrollUpButton2.style.display = 'block';
+            scrollDownButton2.style.display = 'block';
+        } else {
+            // No hay scroll, ocultar los botones
+            scrollUpButton2.style.display = 'none';
+            scrollDownButton2.style.display = 'none';
+        }
+
+        // Asegurar que el scroll esté en la parte superior
+        buttonContainer.scrollTop = 0;
+    }
+
 
     audioCursor.currentTime = 0;
     audioCursor.play();
@@ -243,13 +337,14 @@ function fcnConsultar(strCategoria) {
                         .text(palabra.Palabra)
                         .css("color", "#5A4423");
                     container.append(button);
+
+
                 });
 
 
-                // Si hay más de 20 botones, hacer scroll automático al final
-                if (response.data.length > 20) {
-                    container.scrollTop(container.prop("scrollHeight"));
-                }
+
+
+                checkScroll()
 
             } else {
                 container.append("<p>No hay palabras para mostrar.</p>");

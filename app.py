@@ -17,134 +17,17 @@ import random
 
 import pandas as pd
 
-# Ruta para guardar la última fecha de ejecución y las palabras generadas
-fecha_ultima_ejecucion_path = "ultima_ejecucion.txt"
-palabras_guardadas_path = "palabras_guardadas.txt"
-
-# Ruta para el archivo de palabras
-palabras_file_path = "palabras.txt"
-
-# Verifica si el archivo de última ejecución existe
-if os.path.exists(fecha_ultima_ejecucion_path):
-    with open(fecha_ultima_ejecucion_path, "r") as f:
-        ultima_ejecucion = f.read().strip()  # Lee la última fecha de ejecución
-else:
-    ultima_ejecucion = ""
-
-# Obtiene la fecha actual
-fecha_actual = datetime.now().strftime("%Y-%m-%d")
 
 # Define palabras_random fuera del bloque condicional
 palabras_random = []
 oracion_desordenada = []
 # Si la fecha actual es diferente a la última ejecución, se ejecuta el código
 
-palabras_random1 = []
-
-
-def palabrass_random(archivo):
-    with open(archivo, "r", encoding="utf-8") as file:
-        palabras = file.read().strip().split("\n")
-
-    palabras = [palabra.strip() for palabra in palabras if palabra.strip()]
-
-    if not palabras:
-        return None, []  # Retorna valores vacíos si el archivo está vacío
-
-    palabra_boton = palabras[0]  # Primera palabra
-    primeras_10 = palabras[1:11] if len(palabras) > 1 else []
-    palabras_restantes = palabras[11:] if len(palabras) > 11 else []
-    palabras_random_extra = random.sample(
-        palabras_restantes, min(10, len(palabras_restantes))
-    )
-
-    palabras_r = primeras_10 + palabras_random_extra
-    return palabra_boton, palabras_r  # Retorna una tupla
-
-
-if fecha_actual != ultima_ejecucion:
-    print(f"Ejecutando por primera vez hoy: {fecha_actual}")
-
-    # Cargar palabras desde el archivo
-    with open("palabras.txt", "r", encoding="utf-8") as file:
-        palabras = file.read().strip().split("\n")  # Leer líneas del archivo
-
-    # Eliminar palabras vacías y limpiar espacios
-    palabras = [palabra.strip() for palabra in palabras if palabra.strip()]
-
-    # Seleccionar siempre las primeras 10 palabras
-    primeras_10 = palabras[:10]
-
-    # Seleccionar 10 palabras aleatorias de las restantes (sin repetir las primeras 10)
-    if len(palabras) > 10:
-        palabras_restantes = palabras[10:]  # Omitimos las primeras 10
-        palabras_random_extra = random.sample(
-            palabras_restantes, min(10, len(palabras_restantes))
-        )
-    else:
-        palabras_random_extra = []  # Si hay menos de 10 palabras en total, no hay extra
-
-    # Combinar ambas listas para obtener las 20 palabras finales
-    palabras_finales = primeras_10 + palabras_random_extra
-    palabras_random = palabras_finales
-    print(f"Palabras seleccionadas: {palabras_finales}")
-
-    # Crear directorio para los audios
-    os.makedirs("static/audio", exist_ok=True)
-
-    # Generar los audios usando gTTS
-    for palabra in palabras_finales:
-        audio_path = f"static/audio/{palabra}.mp3"
-        tts = gTTS(text=palabra, lang="es")
-        tts.save(audio_path)
-        print(f"Audio guardado: {audio_path}")
-
-    # Guardar las palabras seleccionadas en un archivo
-    with open(palabras_guardadas_path, "w", encoding="utf-8") as f:
-        f.write(", ".join(palabras_finales))
-
-    # Actualizar la fecha de la última ejecución
-    with open(fecha_ultima_ejecucion_path, "w") as f:
-        f.write(fecha_actual)
-
-else:
-    print(f"Ya se ejecutó hoy: {fecha_actual}, no se generarán los audios nuevamente.")
-
-    # Leer las palabras guardadas de la ejecución anterior
-    if os.path.exists(palabras_guardadas_path):
-        with open(palabras_guardadas_path, "r", encoding="utf-8") as f:
-            palabras_guardadas = f.read().strip().split(", ")
-        # Limitar a 20 palabras si hay más de 20
-        palabras_finales = palabras_guardadas[:20]
-        palabras_random = palabras_finales
-        print(f"Las palabras seleccionadas hoy son: {palabras_finales}")
-    else:
-        print("No se encontraron palabras guardadas.")
-# Inicializar Stanza
-# Cargar el modelo de Stanza para español
-
-palabra_boton2, palabras_random1 = palabrass_random("palabras2.txt")
-palabra_boton3, palabras_random1 = palabrass_random("palabras3.txt")
-palabra_boton4, palabras_random1 = palabrass_random("palabras4.txt")
-palabra_boton1, palabras_random1 = palabrass_random("palabras1.txt")
-palabra_boton5, palabras_random1 = palabrass_random("palabras5.txt")
-
-
-print(palabra_boton1, palabra_boton2, palabra_boton3, palabra_boton4)
-
 
 nlp = stanza.Pipeline(
     "es", processors="tokenize,pos"
 )  # Solo necesitas tokenización y POS tagging
 
-
-palabras_botones = [
-    palabra_boton1,
-    palabra_boton2,
-    palabra_boton3,
-    palabra_boton4,
-    palabra_boton5,
-]
 
 # Variable global para la página activa
 pagina_actual = None  # Inicializamos la variable para controlar la página actual
@@ -156,7 +39,6 @@ last_text_reconocido = ""
 # Variable global para almacenar el último SVG generado
 last_svg = ""
 una = False
-
 
 EXCEL_FILE = "palabras_categorias.xlsx"
 
@@ -828,6 +710,26 @@ def incrementar_contador():
     return message
 
 
+# 📌 Función para obtener las categorías y las palabras
+def obtener_datos():
+    if not os.path.exists(EXCEL_FILE):
+        return [], {}
+
+    # Cargar las categorías
+    df_categoria = pd.read_excel(EXCEL_FILE, sheet_name="Categorias")
+    categorias = df_categoria["Categoria"].tolist()  # Lista de categorías
+
+    # Cargar las palabras
+    df_palabra = pd.read_excel(EXCEL_FILE, sheet_name="Palabras")
+    palabras_por_categoria = (
+        df_palabra.groupby("ID_Categoria")
+        .apply(lambda x: x[["Palabra", "Contador", "Fecha"]].to_dict(orient="records"))
+        .to_dict()
+    )
+
+    return categorias, palabras_por_categoria
+
+
 def obtener_todo():
     """Obtiene todas las palabras y categorías desde el archivo Excel."""
     try:
@@ -1007,6 +909,39 @@ def user_management():
         palabras=palabras,
         categorias_unicas=categorias,
     )
+
+
+@app.route("/get_categoria", methods=["POST"])
+def get_categoria():
+    verificar_excel()  # Asegurar que el archivo Excel existe
+
+    data = request.get_json()
+    id_categoria = data.get("id")
+
+    if not id_categoria:
+        return (
+            jsonify({"success": False, "message": "ID de categoría no proporcionado"}),
+            400,
+        )
+
+    try:
+        df_categoria = pd.read_excel(EXCEL_FILE, sheet_name="Categorias")
+    except ValueError:
+        return (
+            jsonify(
+                {"success": False, "message": "No hay datos en la hoja de categorías"}
+            ),
+            400,
+        )
+
+    categoria_info = df_categoria[df_categoria["ID_Categoria"] == int(id_categoria)]
+
+    if categoria_info.empty:
+        return jsonify({"success": False, "message": "Categoría no encontrada"}), 404
+
+    # Convertimos toda la fila a un diccionario
+    categoria_datos = categoria_info.to_dict(orient="records")[0]
+    return jsonify({"success": True, "info": categoria_datos})
 
 
 @app.route("/submitEditCategoria", methods=["POST"])

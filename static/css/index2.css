@@ -438,3 +438,54 @@ transform-origin: top left;
 
 
 
+
+
+#scrollUpButton {
+  position: absolute;
+  top: 17%;
+  left: 14%; /* Ajusta para centrar diagonalmente en la tarjeta */
+  transform-origin: top left;
+  text-align: center;
+
+  background-color: transparent;
+  border: none;
+  margin-bottom: 10px;
+}
+
+#scrollDownButton {
+  position: absolute;
+  bottom: 17%;
+  left: 14%; /* Ajusta para centrar diagonalmente en la tarjeta */
+  transform-origin: bottom left;
+  text-align: center;
+
+  background-color: transparent;
+  border: none;
+  margin-bottom: 10px;
+}
+
+
+
+#scrollUpButton-Palabras {
+  position: absolute;
+  top: 20px;
+  right: 5px; /* Ajusta para centrar diagonalmente en la tarjeta */
+  transform-origin: top left;
+  text-align: center;
+
+  background-color: transparent;
+  border: none;
+  margin-bottom: 10px;
+}
+
+#scrollDownButton-Palabras {
+  position: absolute;
+  bottom: 35%;
+  right: 5px; /* Ajusta para centrar diagonalmente en la tarjeta */
+  transform-origin: bottom left;
+  text-align: center;
+
+  background-color: transparent;
+  border: none;
+  margin-bottom: 10px;
+}
