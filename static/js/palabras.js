@@ -134,7 +134,7 @@ $(document).ready(function () {
         })
             .then(response => response.json())
             .then(data => {
-                if (data.status === 'success') {
+                if (data.status) {
 
                     Swal.fire({
                         title: 'GENIAL!',
@@ -174,8 +174,6 @@ $(document).ready(function () {
                 });
             });
     });
-
-
 
 
 

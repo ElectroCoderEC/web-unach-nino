@@ -163,17 +163,16 @@ $(document).ready(function () {
 
     // Delete User Button Handler
     $('#usersTable').on('click', '.delete-Categoria', function () {
-        let categoria = $(this).attr("idCategoria");
-        let palabra = $(this).attr("idPalabra");
+        let idcategoria = $(this).attr("idCategoria");
 
-        if (confirm(`¿Estás seguro de eliminar la palabra "${palabra}" de la categoría "${categoria}"?`)) {
+        if (confirm(`¿Estás seguro de eliminar la categoría y todas las palabras asociados a ella"?`)) {
             $.ajax({
-                url: "/eliminar_palabra",
+                url: "/eliminar_categoria",
                 type: "POST",
                 contentType: "application/json",
-                data: JSON.stringify({ categoria: categoria, palabra: palabra }),
+                data: JSON.stringify({ idcategoria: idcategoria }),
                 success: function (response) {
-                    if (response.success) {
+                    if (response.status) {
                         alert("Palabra eliminada correctamente");
                         location.reload(); // Recargar la página para reflejar cambios
                     } else {

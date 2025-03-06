@@ -434,7 +434,6 @@ def procesar_audio():
                                     break
 
                             print("Palabras clave seleccionadas:", palabras_clave)
-                            registrar_palabras(palabras_clave)
 
                             socketio.emit(
                                 "variables",
@@ -756,27 +755,6 @@ def registrar_palabra(categoria_id, palabra):
         df_palabra.to_excel(writer, sheet_name="Palabras", index=False)
 
 
-def registrar_palabras(palabras_clave):
-    if not palabras_clave:
-        return {"error": "No se proporcionaron palabras"}
-
-    # Leer las palabras ya guardadas en el archivo
-    palabras_guardadas = set()
-    if os.path.exists(palabras_file_path):
-        with open(palabras_file_path, "r", encoding="utf-8") as file:
-            palabras_guardadas = set(file.read().splitlines())
-
-    # Filtrar solo las palabras nuevas
-    palabras_nuevas = [p for p in palabras_clave if p not in palabras_guardadas]
-
-    # Guardar solo las nuevas palabras en el archivo
-    if palabras_nuevas:
-        with open(palabras_file_path, "a", encoding="utf-8") as file:
-            file.write("\n".join(palabras_nuevas) + "\n")
-
-    return {"exito": True, "nuevas_palabras": palabras_nuevas}
-
-
 @app.route("/pagina3", methods=["GET", "POST"])
 def pagina3():
     categorias, palabras = obtener_todo()
@@ -848,85 +826,6 @@ def incrementar_contador():
     message = addCuenta(idPalabra)
 
     return message
-
-
-def obtener_top_palabras():
-    if not os.path.exists(EXCEL_FILE):
-        return {}, {}
-
-    df = pd.read_excel(EXCEL_FILE)
-
-    # Filtrar las 20 palabras más usadas por cada categoría
-    palabras_top_por_categoria = {}
-    categorias = df["Categoria"].unique().tolist()
-
-    for categoria in categorias:
-        palabras_categoria = df[df["Categoria"] == categoria]
-        palabras_categoria = palabras_categoria.sort_values(
-            by="Contador", ascending=False
-        ).head(20)
-        palabras_top_por_categoria[categoria] = palabras_categoria[
-            ["Palabra", "Contador", "Fecha"]
-        ].to_dict(orient="records")
-
-    return palabras_top_por_categoria
-
-
-# 📌 Función para guardar datos en Excel evitando duplicados
-def guardar_dato(categoria, palabra):
-    if not os.path.exists(EXCEL_FILE):
-        df = pd.DataFrame(columns=["Categoria", "Palabra", "Contador", "Fecha"])
-    else:
-        df = pd.read_excel(EXCEL_FILE)
-
-    # Verificar si la palabra ya existe en la categoría
-    if (
-        (df["Categoria"] == categoria) & (df["Palabra"].str.lower() == palabra.lower())
-    ).any():
-        return "repetido"
-
-    # Si no existe, agregar la nueva palabra
-    nueva_fila = {
-        "Categoria": categoria,
-        "Palabra": palabra,
-        "Contador": 0,
-        "Fecha": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-    }
-
-    df = df._append(nueva_fila, ignore_index=True)
-    df.to_excel(EXCEL_FILE, index=False)
-
-    return "success"
-
-
-# 📌 Función para obtener palabras por categoría
-def obtener_palabras_por_categoria(categoria):
-    if not os.path.exists(EXCEL_FILE):
-        return []
-
-    df = pd.read_excel(EXCEL_FILE)
-    palabras = df[df["Categoria"] == categoria]["Palabra"].tolist()
-    return palabras
-
-
-# 📌 Función para obtener las categorías y las palabras
-def obtener_datos():
-    if not os.path.exists(EXCEL_FILE):
-        return [], {}
-
-    # Cargar las categorías
-    df_categoria = pd.read_excel(EXCEL_FILE, sheet_name="Categorias")
-    categorias = df_categoria["Categoria"].tolist()  # Lista de categorías
-
-    # Cargar las palabras
-    df_palabra = pd.read_excel(EXCEL_FILE, sheet_name="Palabras")
-    palabras_por_categoria = (
-        df_palabra.groupby("ID_Categoria")
-        .apply(lambda x: x[["Palabra", "Contador", "Fecha"]].to_dict(orient="records"))
-        .to_dict()
-    )
-
-    return categorias, palabras_por_categoria
 
 
 def obtener_todo():
@@ -1108,39 +1007,6 @@ def user_management():
         palabras=palabras,
         categorias_unicas=categorias,
     )
-
-
-@app.route("/get_categoria", methods=["POST"])
-def get_categoria():
-    verificar_excel()  # Asegurar que el archivo Excel existe
-
-    data = request.get_json()
-    id_categoria = data.get("id")
-
-    if not id_categoria:
-        return (
-            jsonify({"success": False, "message": "ID de categoría no proporcionado"}),
-            400,
-        )
-
-    try:
-        df_categoria = pd.read_excel(EXCEL_FILE, sheet_name="Categorias")
-    except ValueError:
-        return (
-            jsonify(
-                {"success": False, "message": "No hay datos en la hoja de categorías"}
-            ),
-            400,
-        )
-
-    categoria_info = df_categoria[df_categoria["ID_Categoria"] == int(id_categoria)]
-
-    if categoria_info.empty:
-        return jsonify({"success": False, "message": "Categoría no encontrada"}), 404
-
-    # Convertimos toda la fila a un diccionario
-    categoria_datos = categoria_info.to_dict(orient="records")[0]
-    return jsonify({"success": True, "info": categoria_datos})
 
 
 @app.route("/submitEditCategoria", methods=["POST"])
@@ -1335,23 +1201,53 @@ def get_word():
 # Ruta para manejar el envío del formulario editar
 @app.route("/submitEdit", methods=["POST"])
 def submitEdit():
+    verificar_excel()  # Asegurar que el archivo Excel existe
+
     try:
-        categoria = request.form["editarCategoria"]
-        palabra = request.form["editarPalabra"]
-        contador = request.form["editarContador"]
-        if not os.path.exists(EXCEL_FILE):
+        id_palabra = request.form.get("id")
+        idcategoria = request.form.get("editarCategoria")
+        editar_palabra = request.form.get("editarPalabra")
+        editar_contador = request.form.get("editarContador")
+
+        # Leer todas las hojas del archivo
+        excel_data = pd.read_excel(EXCEL_FILE, sheet_name=None)
+
+        # Verificar que la hoja "Categorias" exista
+        if "Palabras" not in excel_data:
             return (
-                jsonify({"success": False, "error": "Archivo Excel no encontrado"}),
+                jsonify({"status": False, "message": "Hoja 'Palabras' no encontrada"}),
                 404,
             )
-        df = pd.read_excel(EXCEL_FILE)
 
-        return jsonify({"status": "success"})
-    # return redirect("/usuarios")
+        df_palabras = excel_data["Palabras"]
 
-    except Exception as err:
+        # Buscar la fila con el ID proporcionado
+        index = df_palabras[df_palabras["ID_Palabra"] == int(id_palabra)].index
 
-        return jsonify({"status": "error", "message": str(err)})
+        if index.empty:
+            return (
+                jsonify({"status": False, "message": "ID de palabra no encontrado"}),
+                404,
+            )
+
+        # Actualizar el nombre de la categoría
+        df_palabras.at[index[0], "ID_Categoria"] = int(idcategoria)
+        df_palabras.at[index[0], "Palabra"] = editar_palabra
+        df_palabras.at[index[0], "Contador"] = int(editar_contador)
+
+        # Guardar TODAS las hojas en el mismo archivo
+        excel_data["Palabras"] = df_palabras
+        with pd.ExcelWriter(EXCEL_FILE, engine="openpyxl") as writer:
+            for sheet_name, df in excel_data.items():
+                df.to_excel(writer, sheet_name=sheet_name, index=False)
+
+        return jsonify({"status": True, "message": "Palabra actualizada correctamente"})
+
+    except Exception as e:
+        return (
+            jsonify({"status": False, "message": f"Error al editar palabra: {str(e)}"}),
+            500,
+        )
 
 
 @app.route("/eliminar_palabra", methods=["POST"])
@@ -1398,6 +1294,60 @@ def eliminar_palabra():
             jsonify({"status": False, "message": f"Error al borrar: {str(e)}"}),
             500,
         )
+
+
+@app.route("/eliminar_categoria", methods=["POST"])
+def eliminar_categoria():
+    verificar_excel()  # Asegurar que el archivo Excel existe
+
+    try:
+        datos = request.get_json()
+        idcategoria = datos.get("idcategoria")
+
+        if not idcategoria:
+            return jsonify({"error": "ID de categoría no proporcionado"}), 400
+
+        # Leer todas las hojas del archivo
+        excel_data = pd.read_excel(EXCEL_FILE, sheet_name=None)
+
+        df_categorias = excel_data["Categorias"]
+        df_palabras = excel_data["Palabras"]
+
+        # Verificar si la categoría existe
+        categoria_existe = df_categorias[
+            df_categorias["ID_Categoria"] == int(idcategoria)
+        ]
+        if categoria_existe.empty:
+            return jsonify({"error": "Categoría no encontrada"}), 404
+
+        # Filtrar y eliminar todas las palabras con el ID_Categoria
+        df_palabras_filtrado = df_palabras[
+            df_palabras["ID_Categoria"] != int(idcategoria)
+        ]
+
+        # Filtrar y eliminar la categoría
+        df_categorias_filtrado = df_categorias[
+            df_categorias["ID_Categoria"] != int(idcategoria)
+        ]
+
+        # Actualizar las hojas en el diccionario excel_data
+        excel_data["Categorias"] = df_categorias_filtrado
+        excel_data["Palabras"] = df_palabras_filtrado
+
+        # Guardar TODAS las hojas en el mismo archivo
+        with pd.ExcelWriter(EXCEL_FILE, engine="openpyxl") as writer:
+            for sheet_name, df in excel_data.items():
+                df.to_excel(writer, sheet_name=sheet_name, index=False)
+
+        return jsonify(
+            {
+                "status": True,
+                "message": "Categoría y palabras asociadas eliminadas correctamente",
+            }
+        )
+
+    except Exception as e:
+        return jsonify({"status": False, "message": f"Error al borrar: {str(e)}"}), 500
 
 
 if __name__ == "__main__":
