@@ -2,7 +2,7 @@
 $(document).ready(function () {
 
     const audioIntro = new Audio('../audio/efectos/intro2.mp3'); // Reemplaza con tu ruta local
-    audioIntro.volume = 0.5; // Volumen al 30%
+    audioIntro.volume = 0.5; // Volumen al 50%
     const audioCampana = new Audio('../audio/efectos/campana.mp3'); // Reemplaza con tu ruta local
 
     if (typeof audioIntro.loop == 'boolean') {

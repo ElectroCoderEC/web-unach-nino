@@ -884,6 +884,10 @@ def consultar():
                 404,
             )
 
+        # Ordenar las palabras por la columna "Contador" de mayor a menor
+        palabras_categoria = palabras_categoria.sort_values(
+            by="Contador", ascending=False
+        )
         # Convertir el DataFrame de palabras a una lista de diccionarios
         palabras_lista = palabras_categoria[
             ["ID_Palabra", "Palabra", "Contador", "Fecha"]

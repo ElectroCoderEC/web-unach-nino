@@ -52,7 +52,10 @@ $(document).ready(function () {
     const audioClose = new Audio('../audio/efectos/close.wav'); // Reemplaza con tu ruta local
     const audioError = new Audio('../audio/efectos/error_voz.mp3'); // Reemplaza con tu ruta local
     const audioSelect = new Audio('../audio/efectos/select.wav'); // Reemplaza con tu ruta local
-    const audioFamily = new Audio('../audio/efectos/family.mp3'); // Reemplaza con tu ruta local
+    const audioAdd = new Audio('../audio/efectos/addPalabra.wav'); // Reemplaza con tu ruta local
+    const audioEdit = new Audio('../audio/efectos/editPalabra.wav'); // Reemplaza con tu ruta local
+    const audioBorrar = new Audio('../audio/efectos/letter.wav'); // Reemplaza con tu ruta local
+    const audioDesplazar = new Audio('../audio/efectos/cursor.wav'); // Reemplaza con tu ruta local
 
 
 
@@ -192,8 +195,12 @@ $(document).ready(function () {
             .then(data => {
                 if (data.status) {
 
+                    audioEdit.currentTime = 0
+                    audioEdit.volume = 0.5
+                    audioEdit.play();
+
                     Swal.fire({
-                        title: 'GENIAL!',
+                        title: 'LISTO!',
                         text: '¡La palabra ha sido modificada correctamente!',
                         icon: 'success',
 
@@ -238,6 +245,9 @@ $(document).ready(function () {
 
         let idpalabra = $(this).attr("idPalabra");
 
+        audioDesplazar.currentTime = 0;
+        audioDesplazar.play();
+
         if (confirm(`¿Estás seguro de eliminar esta palabra"?`)) {
             $.ajax({
                 url: "/eliminar_palabra",
@@ -246,6 +256,8 @@ $(document).ready(function () {
                 data: JSON.stringify({ idpalabra: idpalabra }),
                 success: function (response) {
                     if (response.status) {
+                        audioBorrar.currentTime = 0
+                        audioBorrar.play()
                         alert("Palabra eliminada correctamente");
                         location.reload(); // Recargar la página para reflejar cambios
                     } else {
@@ -277,6 +289,10 @@ $(document).ready(function () {
             .then(data => {
 
                 if (data.status === 'success') {
+
+                    audioAdd.currentTime = 0
+                    audioAdd.volume = 0.5
+                    audioAdd.play();
 
 
                     Swal.fire({

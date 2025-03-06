@@ -191,6 +191,11 @@ animation: salto 1s infinite;  /*Hace que los botones salten indefinidamente */
 animation: breathing 2s infinite ease-in-out;
 }
 
+.btn-breath2 {
+  /*//animation: salto 1s infinite;  Hace que los botones salten indefinidamente */
+  animation: breathing2 1s infinite ease-in-out;
+  }
+
 
 
 @keyframes breathing {
@@ -198,6 +203,13 @@ animation: breathing 2s infinite ease-in-out;
 50% { transform: scale(1.025); }
 100% { transform: scale(1); }
 }
+
+
+@keyframes breathing2 {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+  }
 
 
 .btn-explosion {

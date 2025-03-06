@@ -327,8 +327,6 @@ function fcnConsultar(strCategoria, container) {
             var container = $(".button-container");
             container.empty(); // Limpiar el contenido anterior
 
-
-
             if (response.data.length > 0) {
                 response.data.forEach(function (palabra, index) {
                     var button = $("<button>")
@@ -337,12 +335,7 @@ function fcnConsultar(strCategoria, container) {
                         .text(palabra.Palabra)
                         .css("color", "#5A4423");
                     container.append(button);
-
-
                 });
-
-
-
 
                 checkScroll()
 
