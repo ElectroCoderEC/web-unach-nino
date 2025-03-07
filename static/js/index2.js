@@ -60,17 +60,11 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-
-
-
 document.addEventListener("DOMContentLoaded", function () {
     const categorias = document.querySelectorAll(".sidebar button");
     const container = document.querySelector(".button-container");
     const textarea = document.getElementById("oracion-formada");
     const speakButton = document.querySelector(".action-buttons button");
-
-
-
 
     // 📌 Delegación de eventos para los botones de palabras
     container.addEventListener("click", function (event) {
@@ -89,40 +83,30 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 
+    // Inicializar el atributo data-usado en cada botón
+    categorias.forEach(boton => {
+        boton.dataset.usado = "false"; // Inicializar como no usado
+    });
+
     categorias.forEach(boton => {
         boton.addEventListener("click", function (event) {
+            const tipoCategoria = this.value;
 
+            // Cambiar la imagen de fondo del botón clickeado
+            cambiarImagenBoton(this);
 
+            // Restablecer la imagen de fondo de los demás botones
+            categorias.forEach(otroBoton => {
+                if (otroBoton !== this) {
+                    resetearImagenBoton(otroBoton);
+                }
+            });
 
-            tipoCategoria = this.value;
-            fcnConsultar(this.value, container)
-
-
+            // Llamar a la función para consultar datos
+            fcnConsultar(tipoCategoria, container);
         });
     });
 
-    /*
-        buttons.forEach((button) => {
-            button.dataset.usado = "false"; // Control para saber si ya fue usado
-        });
-    
-        buttons.forEach((button) => {
-            button.addEventListener("click", function () {
-    
-                if (textarea.textContent == "-> Texto aquí... <-") {
-                    textarea.textContent = "";
-                }
-                const word = this.textContent.trim();
-                agregarPalabra(button, word, textarea);
-    
-                document.getElementById("bloqueBorrar").classList.remove("invisible");
-                document.getElementById("bloqueHablar").classList.remove("invisible");
-    
-    
-            });
-        });
-    
-    */
 
     speakButton.addEventListener("click", function () {
 
@@ -138,13 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (data.status === "finalizado") {
                         textarea.textContent = "-> Texto aquí... <-"; // Borra el texto cuando el audio termina
                         console.log("Texto borrado.");
-
                         resetBotones();
-
-
-
-
-
                     }
                 })
                 .catch((error) => console.error("Error:", error));
@@ -152,13 +130,8 @@ document.addEventListener("DOMContentLoaded", function () {
             alert("El texto está vacío.");
         }
     });
-
-
     // Verificar el scroll al cargar la página y cuando cambie el tamaño de la ventana
-
-
 });
-
 
 
 // 📌 Función que actualiza los botones dinámicos cuando cambian
@@ -173,7 +146,6 @@ function resetBotones() {
 
     document.getElementById("bloqueBorrar").classList.add("invisible");
     document.getElementById("bloqueHablar").classList.add("invisible");
-
 }
 
 
@@ -199,8 +171,6 @@ function agregarPalabra(boton, word, textarea) {
 
         // Aplicar la animación de explosión
         nuevaPalabra.classList.add("btn-explosion");
-
-
         fcnIncrementarContador(nuevaPalabra.textContent.toLowerCase());
 
         // Añadir la palabra al div
@@ -213,6 +183,27 @@ function agregarPalabra(boton, word, textarea) {
     }
 }
 
+
+// Función para cambiar la imagen de fondo del botón
+function cambiarImagenBoton(boton) {
+    if (boton.dataset.usado === "false") {
+        boton.style.background = "url('../images/btnCategoria2-activo.png') no-repeat center center";
+        boton.style.backgroundSize = "100% 100%"; // Añadir background-size
+        boton.dataset.usado = "true"; // Marcar como usado
+    } else {
+        boton.style.background = "url('../images/btnCategoria2.png') no-repeat center center";
+        boton.style.backgroundSize = "100% 100%"; // Añadir background-size
+        boton.dataset.usado = "false"; // Marcar como no usado
+    }
+}
+
+// Función para restablecer la imagen de fondo del botón
+function resetearImagenBoton(boton) {
+    boton.style.background = "url('../images/btnCategoria2.png') no-repeat center center";
+    boton.style.backgroundSize = "100% 100%"; // Añadir background-size
+    boton.dataset.usado = "false"; // Marcar como no usado
+}
+
 function fcnBorrar() {
 
     audioBorrar.currentTime = 0; // Reinicia el audio al inicio
@@ -220,7 +211,6 @@ function fcnBorrar() {
 
     const buttons = document.querySelectorAll(".button-container button");
     const textarea = document.getElementById("oracion-formada");
-
 
     textarea.textContent = "-> Texto aquí... <-"; // Borra el texto cuando el audio termina
     console.log("Texto borrado.");
