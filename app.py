@@ -1,5 +1,6 @@
 from flask import Flask, render_template, jsonify, request
 from flask_socketio import SocketIO, emit
+import sys
 import vosk
 import pyaudio
 import json
@@ -14,9 +15,11 @@ import time
 from flask import Flask, render_template, redirect
 from flask import Flask, render_template, request, redirect, session
 import random
-
 import pandas as pd
+import logging
 
+# Desactivar logs de Stanza
+logging.getLogger("stanza").setLevel(logging.ERROR)
 
 # Define palabras_random fuera del bloque condicional
 palabras_random = []
@@ -25,7 +28,7 @@ oracion_desordenada = []
 
 
 nlp = stanza.Pipeline(
-    "es", processors="tokenize,pos"
+    "es", processors="tokenize,pos", download_method=None
 )  # Solo necesitas tokenización y POS tagging
 
 
@@ -114,10 +117,12 @@ def inicializar_pygame():
 # Función para inicializar Vosk solo una vez
 def inicializar_vosk():
     global vosk_initialized, rec
-    # if not vosk_initialized:
-    model = vosk.Model(model_path)
-    rec = vosk.KaldiRecognizer(model, 16000)
-    vosk_initialized = True
+    if not vosk_initialized:
+        # Desactivar logs de Vosk
+        vosk.SetLogLevel(-1)  # ocultar mensajes LOGS
+        model = vosk.Model(model_path)
+        rec = vosk.KaldiRecognizer(model, 16000)
+        vosk_initialized = True
 
 
 def inicializar_mic():
