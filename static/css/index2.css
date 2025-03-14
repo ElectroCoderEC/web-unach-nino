@@ -153,6 +153,7 @@ background-size: 100%  100%;
 
 
 
+
 /* Animación de salto para los botones */
 @keyframes salto {
 0% {
@@ -394,7 +395,11 @@ transform: translateX(-50%) translateY(0);
 }
 }
 
-
+/* Aplicar animación de explosión primero */
+.btn-explosion1 {
+  animation: explosion 0.5s ease-out;
+  animation-fill-mode: forwards; /* Mantiene el estado final */
+}
 
 .invisible {
 visibility: hidden;
@@ -403,6 +408,11 @@ visibility: hidden;
 
 .remover {
   display: none;
+}
+
+
+.mostrar {
+  display: inline-block;
 }
 
 
@@ -501,3 +511,29 @@ transform-origin: top left;
   border: none;
   margin-bottom: 10px;
 }
+
+
+
+/* Estilo de la nube de consejo */
+.nube-respuesta {
+  position: absolute;
+  bottom: 20px; /* Ajusta según sea necesario */
+  left: 57%;
+  transform-origin: bottom left;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  padding: 10px 20px;
+  border-radius: 20px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  white-space: nowrap;
+  animation: aparecer 2s ease-in-out infinite alternate, flotacion 3s ease-in-out infinite;
+  }
+
+
+  .boton-desactivado2 {
+    background-color: #cccccc !important; /* Cambio visual para los botones desactivados */
+  }
+  

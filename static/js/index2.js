@@ -6,6 +6,10 @@ const audioBorrar = new Audio('../audio/efectos/letter.wav'); // Reemplaza con t
 const audioClick = new Audio('../audio/efectos/campana.mp3'); // Reemplaza con tu ruta local
 const audioCursor = new Audio('../audio/efectos/cursor_menu.wav'); // Reemplaza con tu ruta local
 const audioDesplazar = new Audio('../audio/efectos/cursor.wav'); // Reemplaza con tu ruta local
+const audioMicro = new Audio('../audio/efectos/letter.wav'); // Reemplaza con tu ruta local
+const audioCarrot = new Audio("../audio/efectos/carrot.wav"); // Asegúrate de que el archivo "click.mp3" esté en tu proyecto
+const audioBien = new Audio('../audio/efectos/treasure.wav'); // Reemplaza con tu ruta local
+
 
 var tipoCategoria = "";
 
@@ -24,6 +28,7 @@ audioIntro.play();
 
 document.addEventListener('DOMContentLoaded', function () {
     const sidebar = document.querySelector('.sidebar');
+
     const scrollUpButton = document.getElementById('scrollUpButton');
     const scrollDownButton = document.getElementById('scrollDownButton');
 
@@ -60,14 +65,26 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
+const textarea = document.getElementById("oracion-formada");
+const bloqueOracion = document.getElementById("bloqueOracion");
+
+
 document.addEventListener("DOMContentLoaded", function () {
     const categorias = document.querySelectorAll(".sidebar button");
     const container = document.querySelector(".button-container");
-    const textarea = document.getElementById("oracion-formada");
     const speakButton = document.querySelector(".action-buttons button");
+
+
+
 
     // 📌 Delegación de eventos para los botones de palabras
     container.addEventListener("click", function (event) {
+
+        document.getElementById("bloqueOracion2").innerHTML = "";
+        document.getElementById("bloqueOracion2").classList.add("remover");
+        document.getElementById("frase").classList.add("invisible");
+
+
         if (event.target.tagName === "BUTTON") { // Verifica si el clic fue en un botón
             if (textarea.textContent == "-> Texto aquí... <-") {
                 textarea.textContent = "";
@@ -78,7 +95,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             document.getElementById("bloqueBorrar").classList.remove("invisible");
             document.getElementById("bloqueHablar").classList.remove("invisible");
-            document.getElementById("bloqueOracion").classList.remove("invisible");
+            bloqueOracion.classList.remove("invisible");
         }
     });
 
@@ -90,6 +107,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     categorias.forEach(boton => {
         boton.addEventListener("click", function (event) {
+
+            document.getElementById("bloqueOracion2").innerHTML = "";
+            document.getElementById("bloqueOracion2").classList.add("remover");
+            document.getElementById("frase").classList.add("invisible");
+
+            // document.getElementById("bloqueOracion").classList.remove("invisible");
+
             const tipoCategoria = this.value;
 
             // Cambiar la imagen de fondo del botón clickeado
@@ -132,6 +156,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     // Verificar el scroll al cargar la página y cuando cambie el tamaño de la ventana
 });
+
+
 
 
 // 📌 Función que actualiza los botones dinámicos cuando cambian
@@ -210,7 +236,6 @@ function fcnBorrar() {
     audioBorrar.play()
 
     const buttons = document.querySelectorAll(".button-container button");
-    const textarea = document.getElementById("oracion-formada");
 
     textarea.textContent = "-> Texto aquí... <-"; // Borra el texto cuando el audio termina
     console.log("Texto borrado.");
@@ -297,7 +322,7 @@ function fcnConsultar(strCategoria, container) {
         }
 
         // Asegurar que el scroll esté en la parte superior
-        buttonContainer.scrollTop = 0;
+        container.scrollTop = 0;
     }
 
 
@@ -306,7 +331,6 @@ function fcnConsultar(strCategoria, container) {
 
 
     document.getElementById("cajaInicial").classList.add("remover");
-    const textarea = document.getElementById("oracion-formada");
     textarea.textContent = "-> Texto aquí... <-"; // Borra el texto cuando el audio termina
     resetBotones();
 
@@ -334,5 +358,300 @@ function fcnConsultar(strCategoria, container) {
             }
         }
     });
+}
+
+
+
+
+function activarAudio() {
+
+    //  resetBotones();
+
+    audioIntro.volume = 0.0;
+    audioMicro.currentTime = 0;
+    audioMicro.play();
+
+    document.getElementById("frase").classList.remove("invisible");
+
+
+    textoAnterior = "";
+
+
+    $.ajax({
+        url: '/activar_audio',
+        method: 'POST',
+        contentType: 'application/json',
+        data: '',
+        success: function (data) {
+            if (data.status === "activo") {
+                // Ocultar el botón de Hablar y mostrar el botón de Detener
+                document.getElementById("start_IA").style.display = "none";
+                document.getElementById("stop_IA").style.display =
+                    "inline-block";
+
+                console.log(data.status)
+
+                // Limpiar completamente el contenedor de botones
+                document.getElementById("bloqueOracion2").innerHTML = `
+                    <div class="col-12">
+                        <div class="mi-boton2" id="oracion-formada2">- Texto aquí... -</div>
+                    </div>
+                `;
+
+                document.getElementById("oracion-formada2").textContent = "- Texto aquí... -"; // Restablecer la visualización
+
+                // document.getElementById("oracion-formada").textContent = "";
+
+                // document.getElementById("bloqueOracion2").classList.remove("remover");
+                // document.getElementById("bloqueOracion2").classList.add("mostrar");
+
+                document.getElementById("bloqueOracion2").innerHTML = "";
+                document.getElementById("bloqueOracion2").classList.remove("remover");
+                document.getElementById("bloqueOracion").classList.add("invisible");
+
+
+            }
+        }
+    });
+
+
+
+}
+
+
+// Función para detener la grabación de audio
+function detenerAudio() {
+
+    audioIntro.volume = 1;
+
+    audioMicro.currentTime = 0;
+    audioMicro.play();
+
+
+
+    fetch("/detener_audio", {
+        method: "POST",
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            // Mostrar de nuevo el botón de Hablar y ocultar el de Detener
+            document.getElementById("start_IA").style.display =
+                "inline-block";
+            document.getElementById("stop_IA").style.display = "none";
+        })
+        .catch((error) =>
+            console.error("Error al detener el audio:", error)
+        );
+}
+
+
+let textoAnterior = ""; // Último texto detectado
+let svgAnterior = ""; // Último gráfico SVG
+let textoFormado = ""; // Oración formada con botones
+let respuestaCorrecta = ""; // Respuesta de Vosk
+let totalBotones = 0; // Número total de botones
+let botonesPresionados = 0; // Contador de botones presionados
+
+// Conectar al servidor Socket.IO
+const socket = io.connect('http://' + document.domain + ':' + location.port);
+// Escuchar los mensajes del servidor
+socket.on('variables', function (data) {
+    // Separar datos del mensaje
+
+    if (data.respuesta_vosk !== textoAnterior) {
+
+        textoAnterior = data.respuesta_vosk;
+        console.log("OLLAMA: ", textoAnterior);
+
+        respuestaCorrecta = data.respuesta_vosk.trim(); // Guardar la respuesta correcta
+        // Solo actualizar los botones cuando haya un nuevo texto de Vosk
+        actualizarBotones(data.palabras_clave);
+
+        console.log("PALABRAS CLAVE: ", data.palabras_clave);
+    }
+
+});
+
+
+
+function actualizarBotones(palabrasClave) {
+
+    const botonesContainer2 = document.getElementById("bloqueOracion2")
+    botonesContainer2.innerHTML = ""; // Limpiar botones previos
+
+    detenerAudio();
+
+    // Reiniciar el estado solo cuando se actualizan los botones
+    textoFormado = "";
+    botonesPresionados = 0;
+    totalBotones = palabrasClave.length;
+
+    palabrasClave.forEach((palabra, index) => {
+        setTimeout(() => {
+            const boton = document.createElement("button");
+            boton.textContent = palabra;
+            boton.dataset.usado = "false"; // Control para saber si ya fue usado
+            boton.classList.add("btn-explosion1"); // Agregar clase de explosión
+
+            boton.onclick = () => {
+                agregarPalabra2(boton, palabra);
+            };
+
+            // Aplicar estilos
+            boton.style.cssText = `
+                background-color: #28a745; /* Verde */
+                color: white;
+                border: none;
+                border-radius: 10px;
+                padding: 10px 10px;
+                margin: 5px;
+                font-size: 16px;
+                cursor: pointer;
+                transition: transform 0.2s ease, box-shadow 0.3s ease;
+                opacity: 0;
+                transform: scale(0.5);
+                border: 5px solid #8b5e3b; /* Borde marrón simulando la madera */
+
+                font-size: 18px;
+                font-weight: bold;
+  
+  
+            `;
+
+            // Agregar efecto hover
+            boton.onmouseover = () => {
+                boton.style.transform = "scale(1.2)";
+                boton.style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.2)";
+            };
+            boton.onmouseleave = () => {
+                boton.style.transform = "scale(1)";
+                boton.style.boxShadow = "none";
+            };
+
+            botonesContainer2.appendChild(boton);
+
+            // Activar animación de aparición
+            setTimeout(() => {
+                boton.style.opacity = "1";
+                boton.style.transform = "scale(1)";
+            }, 50);
+        }, index * 500); // Cada botón aparece con un retraso progresivo
+    });
+}
+
+
+
+
+// Función para agregar palabra y manejar botones
+function agregarPalabra2(boton, palabra) {
+    // Evitar que el mismo botón se use más de una vez
+    if (boton.dataset.usado === "true") {
+
+        audioError.play()
+
+    }
+
+    else {
+
+        audioCarrot.play();
+
+        // Marcar el botón como usado
+        boton.dataset.usado = "true";
+        // boton.disabled = true; // Desactivar el botón
+        boton.classList.add("boton-desactivado2"); // Añadir estilo de botón desactivado
+
+        // Agregar la palabra al texto generado
+        textoFormado += (textoFormado ? " " : "") + palabra;
+        botonesPresionados++; // Aumentar el contador de botones presionados
+
+        // Actualizar el texto generado en la pantalla
+        document.getElementById("frase").textContent = textoFormado;
+
+        // Verificar si todos los botones han sido presionados
+        if (botonesPresionados === totalBotones) {
+            // Verificar el texto solo cuando todos los botones hayan sido presionados
+            setTimeout(verificarOracion, 100); // Esperar medio segundo antes de verificar
+        }
+
+    }
+
+
+}
+
+
+
+// Función para verificar si la oración generada es correcta
+function verificarOracion() {
+    // Verificar si la oración generada es correcta
+    if (textoFormado.trim() === respuestaCorrecta) {
+
+        audioBien.currentTime = 0; // Reinicia el audio al inicio
+        audioBien.play()
+
+        // alert("✅ ¡Oración correcta!");
+
+
+        Swal.fire({
+            title: "¡La oración es correcta!",
+            icon: "success",
+            confirmButtonText: "OK",
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                document.getElementById("frase").textContent = "..."; // Restablecer la visualización
+                document.getElementById("frase").classList.add("invisible");
+                //document.getElementById("bloqueOracion").classList.add("invisible");
+                textoAnterior = "";
+
+                resetBotones();
+
+                document.getElementById("bloqueOracion2").innerHTML = "";
+                document.getElementById("bloqueOracion2").classList.add("remover");
+                document.getElementById("bloqueOracion").classList.remove("invisible");
+
+
+            }
+        });
+
+
+
+
+
+
+    } else {
+
+        audioError.currentTime = 0; // Reinicia el audio al inicio
+        audioError.play()
+
+        // alert("❌ Oración incorrecta. Inténtalo de nuevo.");
+        reiniciarIntento(); // Reiniciar los botones y el texto
+
+        Swal.fire({
+            title: 'La oración es incorrecta. Inténtalo de nuevo.',
+
+            icon: 'error',
+            confirmButtonText: 'OK',
+            position: 'center',
+        })
+
+    }
+}
+
+
+
+// Función para reiniciar el intento
+function reiniciarIntento() {
+    textoFormado = ""; // Vaciar la oración generada
+    botonesPresionados = 0; // Reiniciar el contador de botones
+    document.getElementById("frase").textContent = "..."; // Restablecer la visualización
+
+    // Reactivar los botones y restablecer su estado
+    document
+        .querySelectorAll("#bloqueOracion2 button")
+        .forEach((boton) => {
+            boton.disabled = false;
+            boton.classList.remove("boton-desactivado2"); // Eliminar estilo de botón desactivado
+            boton.dataset.usado = "false"; // Resetear el estado de 'usado'
+        });
 }
 

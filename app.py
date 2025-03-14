@@ -18,6 +18,7 @@ import random
 import pandas as pd
 import logging
 
+
 # Desactivar logs de Stanza
 logging.getLogger("stanza").setLevel(logging.ERROR)
 
@@ -142,11 +143,14 @@ def inicializar_mic():
             stream_audio = None
 
 
-def generar_mensaje(texto_usuario):
+def generar_mensaje(texto_usuario: str) -> str:
+    """Genera un prompt optimizado para Ollama basado en el texto del usuario."""
     global pagina_actual
-    if pagina_actual != "index":
-        return ""  # No generar mensajes si no estamos en index
-    return f"genera una respuesta corta, simple, con sentido, máximo 6 palabras, para el siguiente texto: {texto_usuario}"
+
+    if pagina_actual != "index" or not texto_usuario.strip():
+        return ""  # No generar mensajes si no estamos en index o el texto está vacío
+
+    return f"Responde con una frase corta, clara y coherente (máx. 6 palabras) según este texto: {texto_usuario}"
 
 
 def responder_con_voz(respuesta):
@@ -286,6 +290,7 @@ def procesar_audio():
                             # Llamar a la función que reproduce la respuesta con voz
                             texto_combinado = respuesta
 
+                            """
                             socketio.emit(
                                 "variables",
                                 {
@@ -297,6 +302,7 @@ def procesar_audio():
                                     "svg_gramatica": last_svg,
                                 },
                             )
+                            """
 
                             analisisp = analizar_texto_con_stanza(texto_combinado)
                             oracion_desordenada = desordenar_oracion(texto_combinado)
@@ -419,6 +425,7 @@ def analizar_texto_con_stanza(texto):
 @app.route("/actualizar_texto")
 def actualizar_texto():
     global texto_reconocido, respuesta_vosk, analisis, etiquetas, oracion_desordenada
+
     # Procesa el texto reconocido con Stanza
     return jsonify(
         {
@@ -554,6 +561,7 @@ def audio_status():
 def activar_audio():
     global audio_activado
     audio_activado = True  # Activar el procesamiento del audio
+
     return jsonify({"status": "activo"})
 
 
@@ -644,7 +652,11 @@ def registrar_palabra(categoria_id, palabra):
 
 @app.route("/pagina3", methods=["GET", "POST"])
 def pagina3():
+    global pagina_actual
+
     categorias, palabras = obtener_todo()
+
+    pagina_actual = "index"
 
     return render_template(
         "index2.html",
@@ -911,7 +923,11 @@ def consultar():
 
 @app.route("/tabla")
 def user_management():
+    global pagina_actual
+
     categorias, palabras = obtener_relacionPalabras()
+
+    pagina_actual = "palabras"
 
     return render_template(
         "palabras.html",
@@ -1018,6 +1034,9 @@ def submit_edit_categoria():
 
 @app.route("/categoria")
 def categoria():
+    global pagina_actual
+
+    pagina_actual = "categorias"
 
     categorias, palabras = obtener_todo()
 

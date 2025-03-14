@@ -330,7 +330,6 @@ function activarAudio() {
     img2.classList.add("invisible");
 
 
-
     $.ajax({
         url: '/activar_audio',
         method: 'POST',
@@ -355,18 +354,6 @@ function activarAudio() {
 }
 
 
-
-document.getElementById("btnAtras").addEventListener("click", function () {
-
-    audioClose.currentTime = 0; // Reinicia el audio al inicio
-    audioClose.play()
-    // Espera 1 segundo (1000ms) antes de redirigir
-    setTimeout(function () {
-        window.location.href = "/principal";
-    }, 500);
-});
-
-
 // Función para detener la grabación de audio
 function detenerAudio() {
 
@@ -381,8 +368,6 @@ function detenerAudio() {
     })
         .then((response) => response.json())
         .then((data) => {
-
-
             // Mostrar de nuevo el botón de Hablar y ocultar el de Detener
             document.getElementById("start_audio").style.display =
                 "inline-block";
@@ -392,6 +377,17 @@ function detenerAudio() {
             console.error("Error al detener el audio:", error)
         );
 }
+
+
+document.getElementById("btnAtras").addEventListener("click", function () {
+
+    audioClose.currentTime = 0; // Reinicia el audio al inicio
+    audioClose.play()
+    // Espera 1 segundo (1000ms) antes de redirigir
+    setTimeout(function () {
+        window.location.href = "/principal";
+    }, 500);
+});
 
 
 

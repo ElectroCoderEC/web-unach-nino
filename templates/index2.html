@@ -19,6 +19,8 @@
         
     <script src="https://unpkg.com/siriwave/dist/siriwave.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+
 
     <link rel="stylesheet" href="css/index2.css"/>
 
@@ -35,6 +37,14 @@
     
       <div class="text-center" style="padding-top: 10px; padding-bottom: 20px; background-color: #65472B; vertical-align:middle;">
         <img src="images/categorias.png" width="200px" height="50px">
+      </div>
+
+      <div  id="start_IA" onclick="activarAudio()">
+        <img src="images/BTNIA.png" class="button-containerCopy"  width="100%">
+      </div>
+
+      <div  id="stop_IA" onclick="detenerAudio()" style="display: none">
+        <img src="images/BTNIASTOP.png" class="button-containerCopy"  width="100%">
       </div>
     
       {% for categoria in categorias %}
@@ -82,11 +92,15 @@
         <div  class="container text-center">
           <div class="row ">
             <div class="col-12">
+
+           
   
               <div id="cajaInicial" >
+                
                 <img src="images/palabras.png" class="button-containerCopy"   height="100%"  >
                 <p class="overlay-text">Elije una categoría</p>
               </div>
+
               
               <div class="button-container"></div>
 
@@ -103,12 +117,24 @@
       
 
       <div class="etiquetaOracion">
+       
         <div class="row contenedor-textarea invisible" id="bloqueOracion">
           <div class="col-12">
              <div class="mi-boton2" id="oracion-formada">- Texto aquí... - </div>
           </div>
         </div>
+
+
+        <div class="row contenedor-textarea remover" id="bloqueOracion2">
+          <div class="col-12">
+             <div class="mi-boton2" id="oracion-formada">- Texto aquí2... - </div>
+          </div>
+        </div>
+
+       
       </div>
+
+      <div class="nube-respuesta invisible" id="frase" >➡️ Frase ⬅️</div>
      
      
 
